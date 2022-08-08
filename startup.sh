@@ -82,11 +82,11 @@ else
 fi
 
 cp ${SCRIPT_ROOT}/config.docker.php $DST_DIR/config.php
-chmod 644 $DST_DIR/config.php
+chmod 640 $DST_DIR/config.php
 
 for d in cache lock feed-icons; do
-	chmod 777 $DST_DIR/$d
-	find $DST_DIR/$d -type f -exec chmod 666 {} \;
+	chmod 770 $DST_DIR/$d
+	find $DST_DIR/$d -type f -exec chmod 660 {} \;
 done
 
 chown -R ttrss:ttrss $DST_DIR /var/log/php81
