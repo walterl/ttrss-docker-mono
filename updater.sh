@@ -10,14 +10,14 @@ unset AUTO_CREATE_USER_PASS
 # wait for the app container to delete .app_is_ready and perform rsync, etc.
 sleep 30
 
-if ! id app >/dev/null 2>&1; then
+if ! id ttrss >/dev/null 2>&1; then
 	# what if i actually need a duplicate GID/UID group?
 
-	addgroup -g $OWNER_GID app || echo app:x:$OWNER_GID:app | \
+	addgroup -g $OWNER_GID ttrss || echo ttrss:x:$OWNER_GID:ttrss | \
 		tee -a /etc/group
 
-	adduser -D -h /var/www/html -G app -u $OWNER_UID app || \
-		echo app:x:$OWNER_UID:$OWNER_GID:Linux User,,,:/var/www/html:/bin/ash | tee -a /etc/passwd
+	adduser -D -h /var/www/html -G ttrss -u $OWNER_UID ttrss || \
+		echo ttrss:x:$OWNER_UID:$OWNER_GID:Linux User,,,:/var/www/html:/bin/ash | tee -a /etc/passwd
 fi
 
 while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER; do
@@ -35,4 +35,4 @@ while [ ! -s $DST_DIR/config.php -a -e $DST_DIR/.app_is_ready ]; do
 	sleep 3
 done
 
-sudo -E -u app /usr/bin/php81 /var/www/html/tt-rss/update_daemon2.php
+sudo -E -u ttrss /usr/bin/php81 /var/www/html/tt-rss/update_daemon2.php

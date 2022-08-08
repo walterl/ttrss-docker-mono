@@ -9,14 +9,14 @@ done
 unset HTTP_PORT
 unset HTTP_HOST
 
-if ! id app >/dev/null 2>&1; then
+if ! id ttrss >/dev/null 2>&1; then
 	# what if i actually need a duplicate GID/UID group?
 
-	addgroup -g $OWNER_GID app || echo app:x:$OWNER_GID:app | \
+	addgroup -g $OWNER_GID ttrss || echo ttrss:x:$OWNER_GID:ttrss | \
 		tee -a /etc/group
 
-	adduser -D -h /var/www/html -G app -u $OWNER_UID app || \
-		echo app:x:$OWNER_UID:$OWNER_GID:Linux User,,,:/var/www/html:/bin/ash | tee -a /etc/passwd
+	adduser -D -h /var/www/html -G ttrss -u $OWNER_UID ttrss || \
+		echo ttrss:x:$OWNER_UID:$OWNER_GID:Linux User,,,:/var/www/html:/bin/ash | tee -a /etc/passwd
 fi
 
 update-ca-certificates || true
@@ -34,18 +34,18 @@ PSQL="psql -q -h $TTRSS_DB_HOST -U $TTRSS_DB_USER $TTRSS_DB_NAME"
 
 if [ ! -d $DST_DIR/.git ]; then
 	mkdir -p $DST_DIR
-	chown $OWNER_UID:$OWNER_GID $DST_DIR
+	chown ttrss:ttrss $DST_DIR
 
 	echo cloning tt-rss source from $SRC_REPO to $DST_DIR...
-	sudo -u app git clone --depth 1 $SRC_REPO $DST_DIR || echo error: failed to clone master repository.
+	sudo -u ttrss git clone --depth 1 $SRC_REPO $DST_DIR || echo error: failed to clone master repository.
 else
 	echo updating tt-rss source in $DST_DIR from $SRC_REPO...
 
-	chown -R $OWNER_UID:$OWNER_GID $DST_DIR
+	chown -R ttrss:ttrss $DST_DIR
 	cd $DST_DIR && \
-		sudo -u app git config core.filemode false && \
-		sudo -u app git config pull.rebase false && \
-		sudo -u app git pull origin master || echo error: unable to update master repository.
+		sudo -u ttrss git config core.filemode false && \
+		sudo -u ttrss git config pull.rebase false && \
+		sudo -u ttrss git pull origin master || echo error: unable to update master repository.
 fi
 
 if [ ! -e $DST_DIR/index.php ]; then
@@ -55,7 +55,7 @@ fi
 
 if [ ! -d $DST_DIR/plugins.local/nginx_xaccel ]; then
 	echo cloning plugins.local/nginx_xaccel...
-	sudo -u app git clone https://git.tt-rss.org/fox/ttrss-nginx-xaccel.git \
+	sudo -u ttrss git clone https://git.tt-rss.org/fox/ttrss-nginx-xaccel.git \
 		$DST_DIR/plugins.local/nginx_xaccel ||  echo warning: failed to clone nginx_xaccel.
 else
 	if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
@@ -66,18 +66,18 @@ else
 				echo updating $PLUGIN...
 
 				cd $PLUGIN && \
-					sudo -u app git config core.filemode false && \
-					sudo -u app git config pull.rebase false && \
-					sudo -u app git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
+					sudo -u ttrss git config core.filemode false && \
+					sudo -u ttrss git config pull.rebase false && \
+					sudo -u ttrss git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
 			fi
 		done
 	else
 		echo updating plugins.local/nginx_xaccel...
 
 		cd $DST_DIR/plugins.local/nginx_xaccel && \
-			sudo -u app git config core.filemode false && \
-			sudo -u app git config pull.rebase false && \
-			sudo -u app git pull origin master || echo warning: attempt to update plugin nginx_xaccel failed.
+			sudo -u ttrss git config core.filemode false && \
+			sudo -u ttrss git config pull.rebase false && \
+			sudo -u ttrss git pull origin master || echo warning: attempt to update plugin nginx_xaccel failed.
 	fi
 fi
 
@@ -89,8 +89,7 @@ for d in cache lock feed-icons; do
 	find $DST_DIR/$d -type f -exec chmod 666 {} \;
 done
 
-chown -R $OWNER_UID:$OWNER_GID $DST_DIR \
-	/var/log/php81
+chown -R ttrss:ttrss $DST_DIR /var/log/php81
 
 $PSQL -c "create extension if not exists pg_trgm"
 
@@ -139,12 +138,12 @@ sed -i.bak "s/^\(memory_limit\) = \(.*\)/\1 = ${PHP_WORKER_MEMORY_LIMIT}/" \
 sed -i.bak "s/^\(pm.max_children\) = \(.*\)/\1 = ${PHP_WORKER_MAX_CHILDREN}/" \
 	/etc/php81/php-fpm.d/www.conf
 
-sudo -Eu app php81 $DST_DIR/update.php --update-schema=force-yes
+sudo -Eu ttrss php81 $DST_DIR/update.php --update-schema=force-yes
 
 if [ ! -z "$ADMIN_USER_PASS" ]; then
-	sudo -Eu app php81 $DST_DIR/update.php --user-set-password "admin:$ADMIN_USER_PASS"
+	sudo -Eu ttrss php81 $DST_DIR/update.php --user-set-password "admin:$ADMIN_USER_PASS"
 else
-	if sudo -Eu app php81 $DST_DIR/update.php --user-check-password "admin:password"; then
+	if sudo -Eu ttrss php81 $DST_DIR/update.php --user-check-password "admin:password"; then
 		RANDOM_PASS=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 16 ; echo '')
 
 		echo "*****************************************************************************"
@@ -152,20 +151,20 @@ else
 		echo "* If you want to set it manually, use ADMIN_USER_PASS environment variable. *"
 		echo "*****************************************************************************"
 
-		sudo -Eu app php81 $DST_DIR/update.php --user-set-password "admin:$RANDOM_PASS"
+		sudo -Eu ttrss php81 $DST_DIR/update.php --user-set-password "admin:$RANDOM_PASS"
 	fi
 fi
 
 if [ ! -z "$ADMIN_USER_ACCESS_LEVEL" ]; then
-	sudo -Eu app php81 $DST_DIR/update.php --user-set-access-level "admin:$ADMIN_USER_ACCESS_LEVEL"
+	sudo -Eu ttrss php81 $DST_DIR/update.php --user-set-access-level "admin:$ADMIN_USER_ACCESS_LEVEL"
 fi
 
 if [ ! -z "$AUTO_CREATE_USER" ]; then
-	sudo -Eu app /bin/sh -c "php81 $DST_DIR/update.php --user-exists $AUTO_CREATE_USER ||
+	sudo -Eu ttrss /bin/sh -c "php81 $DST_DIR/update.php --user-exists $AUTO_CREATE_USER ||
 		php81 $DST_DIR/update.php --force-yes --user-add \"$AUTO_CREATE_USER:$AUTO_CREATE_USER_PASS:$AUTO_CREATE_USER_ACCESS_LEVEL\""
 fi
 
-rm -f /tmp/error.log && mkfifo /tmp/error.log && chown app:app /tmp/error.log
+rm -f /tmp/error.log && mkfifo /tmp/error.log && chown ttrss:ttrss /tmp/error.log
 
 (tail -q -f /tmp/error.log >> /proc/1/fd/2) &
 

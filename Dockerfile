@@ -12,7 +12,7 @@ RUN apk add --no-cache dcron php81 php81-fpm \
 	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php81/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \
-		-e 's/^\(user\|group\) = .*/\1 = app/i' \
+		-e 's/^\(user\|group\) = .*/\1 = ttrss/i' \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \
 			/etc/php81/php-fpm.d/www.conf && \
