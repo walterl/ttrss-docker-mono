@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    image: walt3rl/ttrss:dev
+    build:
+      context: .
+    ports:
+      - 20080:80
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - TTRSS_DB_HOST=db
+      - TTRSS_DB_NAME=ttrss
+      - TTRSS_DB_USER=postgres
+      - TTRSS_DB_PASS=hunter2
+      - TTRSS_SELF_URL_PATH=http://127.0.0.1:20080
+    restart: unless-stopped
+    volumes:
+      - ./backups:/backups
+      - ./config.d:/opt/tt-rss/config.d:ro
+
+  db:
+    image: postgres:12
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_PASSWORD: hunter2
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
