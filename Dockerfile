@@ -1,4 +1,7 @@
 FROM nginx:alpine AS base
+LABEL org.opencontainers.image.version="0.1.0"
+LABEL org.opencontainers.image.authors="Walter Leibbrandt"
+LABEL org.opencontainers.image.source="https://github.com/walterl/ttrss-docker-mono"
 
 ENV SCRIPT_ROOT=/opt/tt-rss
 
