@@ -68,4 +68,7 @@ ENV TTRSS_MYSQL_CHARSET="UTF8"
 ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php81"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
 
+VOLUME ${SCRIPT_ROOT}/config.d
+VOLUME /backups
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
