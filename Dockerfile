@@ -31,15 +31,15 @@ ENV PHP_WORKER_MAX_CHILDREN=5
 ENV PHP_WORKER_MEMORY_LIMIT=256M
 
 # these are applied on every startup, if set
-ENV ADMIN_USER_PASS=""
+ENV ADMIN_USER_PASS=
 # see classes/UserHelper.php ACCESS_LEVEL_*
 # setting this to -2 would effectively disable built-in admin user
 # unless single user mode is enabled
-ENV ADMIN_USER_ACCESS_LEVEL=""
+ENV ADMIN_USER_ACCESS_LEVEL=
 
 # these are applied unless user already exists
-ENV AUTO_CREATE_USER=""
-ENV AUTO_CREATE_USER_PASS=""
+ENV AUTO_CREATE_USER=
+ENV AUTO_CREATE_USER_PASS=
 ENV AUTO_CREATE_USER_ACCESS_LEVEL="0"
 
 # TODO: remove prefix from container variables not used by tt-rss itself:
@@ -48,17 +48,18 @@ ENV AUTO_CREATE_USER_ACCESS_LEVEL="0"
 # - TTRSS_XDEBUG_... -> XDEBUG_...
 
 # don't try to update local plugins on startup (except for nginx_xaccel)
-ENV TTRSS_NO_STARTUP_PLUGIN_UPDATES=""
+ENV TTRSS_NO_STARTUP_PLUGIN_UPDATES=
 
 # TTRSS_XDEBUG_HOST defaults to host IP if unset
-ENV TTRSS_XDEBUG_ENABLED=""
-ENV TTRSS_XDEBUG_HOST=""
+ENV TTRSS_XDEBUG_ENABLED=
+ENV TTRSS_XDEBUG_HOST=
 ENV TTRSS_XDEBUG_PORT="9000"
 
 ENV TTRSS_DB_TYPE="pgsql"
 ENV TTRSS_DB_HOST="db"
 ENV TTRSS_DB_PORT="5432"
 
+ENV TTRSS_SELF_URL_PATH=
 ENV TTRSS_MYSQL_CHARSET="UTF8"
 ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php81"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
