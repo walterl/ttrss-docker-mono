@@ -28,7 +28,6 @@ SRC_REPO=https://git.tt-rss.org/fox/tt-rss.git
 
 export PGPASSWORD=$TTRSS_DB_PASS
 
-[ ! -e /var/www/html/index.php ] && cp ${SCRIPT_ROOT}/index.php /var/www/html
 
 PSQL="psql -q -h $TTRSS_DB_HOST -U $TTRSS_DB_USER $TTRSS_DB_NAME"
 
