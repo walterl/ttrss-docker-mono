@@ -23,7 +23,6 @@ RUN apk add --no-cache dcron php81 php81-fpm \
 
 ADD startup.sh ${SCRIPT_ROOT}
 ADD updater.sh ${SCRIPT_ROOT}
-ADD dcron.sh ${SCRIPT_ROOT}
 ADD config.docker.php ${SCRIPT_ROOT}
 ADD backup.sh /etc/periodic/weekly/backup
 COPY supervisord.conf /etc/supervisor/
