@@ -28,6 +28,7 @@ SRC_REPO=https://git.tt-rss.org/fox/tt-rss.git
 
 export PGPASSWORD=$TTRSS_DB_PASS
 
+psql -q -h "$TTRSS_DB_HOST" -U "$TTRSS_DB_USER" -c "create database $TTRSS_DB_NAME owner = $TTRSS_DB_USER;"
 
 PSQL="psql -q -h $TTRSS_DB_HOST -U $TTRSS_DB_USER $TTRSS_DB_NAME"
 
