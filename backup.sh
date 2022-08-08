@@ -28,4 +28,5 @@ if pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER; then
 	echo done.
 else
 	echo backup failed: database is not ready.
+	exit 1
 fi
