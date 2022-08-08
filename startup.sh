@@ -164,9 +164,9 @@ if [ ! -z "$AUTO_CREATE_USER" ]; then
 		php81 $DST_DIR/update.php --force-yes --user-add \"$AUTO_CREATE_USER:$AUTO_CREATE_USER_PASS:$AUTO_CREATE_USER_ACCESS_LEVEL\""
 fi
 
-rm -f /tmp/error.log && mkfifo /tmp/error.log && chown ttrss:ttrss /tmp/error.log
+rm -f /var/log/ttrss/error.log && mkfifo /var/log/ttrss/error.log && chown ttrss:ttrss /var/log/ttrss/error.log
 
-(tail -q -f /tmp/error.log >> /proc/1/fd/2) &
+(tail -q -f /var/log/ttrss/error.log >> /proc/1/fd/2) &
 
 unset ADMIN_USER_PASS
 unset AUTO_CREATE_USER_PASS
