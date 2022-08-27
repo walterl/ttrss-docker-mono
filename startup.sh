@@ -85,8 +85,8 @@ cp ${SCRIPT_ROOT}/config.docker.php $DST_DIR/config.php
 chmod 640 $DST_DIR/config.php
 
 for d in cache lock feed-icons; do
-	chmod 770 $DST_DIR/$d
-	find $DST_DIR/$d -type f -exec chmod 660 {} \;
+	chmod 775 $DST_DIR/$d
+	find $DST_DIR/$d -type f -exec chmod 664 {} \;
 done
 
 chown -R ttrss:ttrss $DST_DIR /var/log/php81
